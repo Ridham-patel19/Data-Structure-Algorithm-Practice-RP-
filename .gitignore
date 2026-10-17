@@ -1,0 +1,13 @@
+# VS Code settings
+.vscode/
+
+# Compiled C/C++ files
+*.exe
+*.out
+
+# Java compiled files
+*.class
+
+# Build directories
+build/
+bin/
