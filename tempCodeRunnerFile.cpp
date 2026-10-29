@@ -1,248 +1,118 @@
-#include <iostream>
+#include<iostream>
+#include<vector>
 using namespace std;
 
-class Node{
-    public:
-    int val;
-    Node* next;
-    Node* prev;
-
-    public:
-     Node(int val){
-        this->val = val;
-        this->next = nullptr;
-        this->prev = nullptr;
-    }
-};
-
-class DoublyLinkedList{
+class Heap{
     private:
-    Node* head;
-    
-   
-public:
-    DoublyLinkedList(int val){
-        Node* temp = new Node(val);
-        this->head = temp;
-        
-       
+    vector<int> heap;
+
+    private:
+    int leftChild(int index){
+        return index * 2 + 1;
+
+    }
+
+    private:
+    int rightChild(int index){
+        return index * 2 + 2;
     }
 
 
-    public:
-     Node* getHead(){
-        return this->head;
-    }
-
-    public:
-    void append(int val){
-         Node* newNode = new Node(val);
-        if(head == nullptr){
-           head = newNode;
-           return;
-        }
-
-        Node* temp = head;
-
-        while(temp->next != nullptr){
-            temp = temp->next ;
-        }
-
-        temp->next = newNode;
-        newNode->prev = temp;
+    private:
+    int parent(int index){
+        return (int) (index - 1) / 2 ;
     }
 
 
-    public:
-    void prepend(int val){
-         Node* newNode = new Node(val);
-        if(head == nullptr){
-           head = newNode;
-           return;
-        }
 
-
-        Node* temp = head;
-
-        temp->prev = newNode;
-        newNode->next = head;
-
-        head = newNode;
-
-
-        
-
+    private:
+    void swap(int index1 , int index2){
+                int temp = heap[index1];
+                heap[index1] = heap[index2];
+                heap[index2] = temp;
+                
     }
 
 public:
-    void printList(){
-        if(head == nullptr){
-            return;
-        }
-Node* temp = head;
-        while(temp != nullptr){
-            cout<< temp->val << "->";
-            temp = temp->next;
+    void insert(int value){
+        heap.push_back(value);
+        int current = heap.size() - 1 ;
+
+        while(current > 0 && heap[current] > heap[parent(current)]){
+            swap(current , parent(current));
+            current = parent(current);
         }
     }
 
-public:
-    void DeleteEnd(){
-        if(head == nullptr){
-          return;
-        }
-        if(head->next == nullptr){
-            head = nullptr;
-            return;
-        }
-
-        Node* temp = head;
-
-        while(temp->next != nullptr){
-
-            temp = temp->next ;
-        }
-        Node* last = temp;
-        temp = temp->prev;
-        temp->next = nullptr;
-
-        delete last;
-    }
 
     public:
-    void DeleteFirst(){
-        if(head == nullptr) return;
-        if(head->next == nullptr){
-            head = nullptr;
-            return;
+    int remove(){
+        if(heap.size() == 0){
+            return INT8_MIN;
         }
-       
-        Node* temp = head;
-
-        head = head->next;
-
-        delete temp;
-
-
-
-    }
-
-    public:
-    Node* get(int index){
-        
-       Node* temp = head;
-
-       for (int i = 0; i < index; i++)
-       {
-        temp=temp->next;
-        if(temp == nullptr){
-            return nullptr;
-        }
-       }
-       return temp;
-       
-    }
-
-    public:
-    void set(int index , int val){
-        Node* temp = get(index);
-
-        if(temp){
-            temp->val = val;
+         int maxValue = heap.front();
+        if(heap.size() == 1){
+        heap.pop_back();
         }else{
-            cout<<"this index doesnot exist";
+            heap[0] = heap.back();
+            heap.pop_back();
+            sinkDown(0);
         }
 
 
+
+        return maxValue;
     }
 
 
-    public:
-    void insert(int index , int val){
-        Node* newNode = new Node(val);
+    private:
+    void sinkDown(int index){
+        int current = index;
+        int large = current;
+       while(true){
+          int leftIndex = leftChild(current);
+          int rightIndex = rightChild(current);
+          
+         if(leftIndex < heap.size() && heap[current] < heap[leftIndex]){
+           large = leftIndex;
+          
+         }
 
-         Node* temp = get(index);
-
-        if(temp){
-             Node* prev = temp->prev;
-
-        prev->next = newNode;
-
-        newNode->next = temp;
-
-        temp->prev = newNode;
-        }else{
-            cout<<"this index doesnot exist";
-        }
-
-       
-    }
-
-    public: 
-    void Delete(int index){
-         Node* temp = get(index);
-
-        if(temp){
-            Node* prev = temp->prev;
-               if(prev !=nullptr){
- prev->next = temp->next;
-               }else{
-                head = head->next;
-               }
-            if(temp->next != nullptr){
-           
-            temp->next->prev = prev;
-            }
+         if(rightIndex < heap.size() && heap[current] < heap[rightIndex]){
+            large = rightIndex;
             
-            delete temp;
-        }else{
-            cout<<"this index doesnot exist";
-        }
+         }
 
+         if(current == large){
+            return;
+         }
+
+         
+ swap(current , large);
+ current = large;
+       }
+      
+    }
+
+    public:
+    void printHeap(){
+        for(int a : heap){
+            cout<< a << " , " ;
+        }
     }
 };
-
-
 
 
 int main(){
-    
+    Heap myHeap;
+myHeap.insert(21);
 
-    //new return pointer
-    DoublyLinkedList* ddl = new  DoublyLinkedList(8);
+myHeap.insert(34);
+myHeap.insert(45);
+myHeap.insert(6516);
 
-    //DoublyLinkedList ddl(8);
 
+myHeap.remove();
+myHeap.printHeap();
    
-
-    ddl->append(9);
-    ddl->append(10);
-    ddl->append(11);
-
-    // ddl->printList();
-
-    ddl->DeleteEnd();
-
-    // ddl->printList();
-
-
-    ddl->prepend(1);
-
-  ddl->printList();
-
-  cout<< endl;
-    ddl->DeleteFirst();
-      ddl->printList();
-
-//        Node* node =  ddl->get(4);
-// if(node == nullptr)cout<<"this index iasnot exist";
-//        cout<<node->val;
-
-//        ddl->insert(2 , 999);
-
-ddl->Delete(5);
-cout<<endl;
-       ddl->printList();
-
-
 }
