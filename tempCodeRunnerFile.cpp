@@ -1,118 +1,142 @@
 #include<iostream>
-#include<vector>
 using namespace std;
 
-class Heap{
-    private:
-    vector<int> heap;
-
-    private:
-    int leftChild(int index){
-        return index * 2 + 1;
-
-    }
-
-    private:
-    int rightChild(int index){
-        return index * 2 + 2;
-    }
-
-
-    private:
-    int parent(int index){
-        return (int) (index - 1) / 2 ;
-    }
-
-
-
-    private:
-    void swap(int index1 , int index2){
-                int temp = heap[index1];
-                heap[index1] = heap[index2];
-                heap[index2] = temp;
-                
-    }
-
-public:
-    void insert(int value){
-        heap.push_back(value);
-        int current = heap.size() - 1 ;
-
-        while(current > 0 && heap[current] > heap[parent(current)]){
-            swap(current , parent(current));
-            current = parent(current);
-        }
-    }
-
-
+class Node{
     public:
-    int remove(){
-        if(heap.size() == 0){
-            return INT8_MIN;
-        }
-         int maxValue = heap.front();
-        if(heap.size() == 1){
-        heap.pop_back();
-        }else{
-            heap[0] = heap.back();
-            heap.pop_back();
-            sinkDown(0);
-        }
+    int value;
+    Node* left;
+    Node* right;
 
-
-
-        return maxValue;
-    }
-
-
-    private:
-    void sinkDown(int index){
-        int current = index;
-        int large = current;
-       while(true){
-          int leftIndex = leftChild(current);
-          int rightIndex = rightChild(current);
-          
-         if(leftIndex < heap.size() && heap[current] < heap[leftIndex]){
-           large = leftIndex;
-          
-         }
-
-         if(rightIndex < heap.size() && heap[current] < heap[rightIndex]){
-            large = rightIndex;
-            
-         }
-
-         if(current == large){
-            return;
-         }
-
-         
- swap(current , large);
- current = large;
-       }
-      
-    }
-
-    public:
-    void printHeap(){
-        for(int a : heap){
-            cout<< a << " , " ;
-        }
+    Node(int value){
+        this->value = value;
+        this->left = nullptr;
+        this->right = nullptr;
     }
 };
 
+class BST{
+
+    public:
+    Node* root;
+
+    BST(){
+        this->root = nullptr;
+    }
+
+public:
+void insert(int value , Node*& root){
+    
+
+    if(root == nullptr){
+       root = new Node(value);;
+        return;
+    }
+
+   
+   if(value <= root->value){
+    insert(value , root->left);
+   }else{
+    insert(value , root->right);
+   }
+
+
+}
+
+public:
+void display(Node* root){
+    if(root == nullptr){
+        
+        return;
+    }
+
+
+   cout<<root->value<<"->";
+
+   display(root->left);
+
+   
+   display(root->right);
+
+
+    
+
+   
+}
+
+public:
+bool isExist( Node* head , int val){
+    if(head == nullptr) return false;
+
+    while(true){
+        if(head == nullptr) return false;
+        if(head->value == val) return true;
+
+        if(val < head->value){
+            head = head->left;
+        }else{
+            head = head->right;
+        }
+
+
+    }
+
+    return false;
+}
+
+
+Node* deleteNode(Node* root , int value){
+    if(root == nullptr)return nullptr;
+    if(value < root->value){
+          root->left = deleteNode(root->left , value);
+    }else if(value > root->value){
+        root->right = deleteNode(root->right , value);
+    }else{
+        if(root->left == nullptr && root->right == nullptr){
+            root = nullptr;
+            return root;
+        }else if(root->left == nullptr){
+            Node* temp = root->right;
+
+            delete(root);
+
+            return temp;
+        }else if(root->right == nullptr){
+            Node* temp = root->left;
+            delete(root);
+            return temp;
+        }else{
+           int minVal = minValInTree(root->right);
+           root->value = minVal;
+           root->right = deleteNode(root->right , minVal);
+        }
+         
+    }
+   return root;
+}
+
+public:
+int minValInTree(Node* root){
+   if(root->left == nullptr) return root->value;
+   return minValInTree(root->left);
+}
+
+};
 
 int main(){
-    Heap myHeap;
-myHeap.insert(21);
+    BST b1;
 
-myHeap.insert(34);
-myHeap.insert(45);
-myHeap.insert(6516);
+    b1.insert(18 , b1.root);
+    b1.insert(29 , b1.root);
+     b1.insert(32 , b1.root);
+    b1.insert(34 , b1.root);
+     b1.insert(1 , b1.root);
+    b1.insert(2 , b1.root);
+     b1.deleteNode(b1.root , 29);
+//   cout<<" 1 means exist 0 means no :" << b1.isExist(b1.root ,18) << endl;
+    b1.display(b1.root);
+
+//    cout<< b1.minValInTree(b1.root);
 
 
-myHeap.remove();
-myHeap.printHeap();
-   
+
 }
