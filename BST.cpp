@@ -64,6 +64,45 @@ void display(Node* root){
 }
 
 public:
+void preOrderDFS(Node* root){
+    cout<<root->value<<" ,";
+
+    if(root->left != nullptr){
+        preOrderDFS(root->left);
+    }
+    if(root->right != nullptr){
+        preOrderDFS(root->right);
+    }
+}
+
+public:
+void postOrderDFS(Node* root){
+    
+
+    if(root->left != nullptr){
+        preOrderDFS(root->left);
+    }
+    if(root->right != nullptr){
+        preOrderDFS(root->right);
+    }
+    cout<<root->value<<" ,";
+}
+
+public:
+void inOrderDFS(Node* root){
+    
+
+    if(root->left != nullptr){
+        preOrderDFS(root->left);
+    }
+     cout<<root->value<<" ,";
+    if(root->right != nullptr){
+        preOrderDFS(root->right);
+    }
+   
+}
+
+public:
 bool isExist( Node* head , int val){
     if(head == nullptr) return false;
 
@@ -131,11 +170,14 @@ int main(){
     b1.insert(34 , b1.root);
      b1.insert(1 , b1.root);
     b1.insert(2 , b1.root);
-     b1.deleteNode(b1.root , 29);
+  
 //   cout<<" 1 means exist 0 means no :" << b1.isExist(b1.root ,18) << endl;
-    b1.display(b1.root);
+    // b1.display(b1.root);
 
 //    cout<< b1.minValInTree(b1.root);
+b1.display(b1.root);
+cout<<endl;
+b1.postOrderDFS(b1.root);
 
 
 
