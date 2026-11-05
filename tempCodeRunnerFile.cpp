@@ -1,67 +1,43 @@
 #include<iostream>
+#include<vector>
 using namespace std;
 
+class FibWithMemo{
+    public:
+    vector<int> memo = vector<int>(100, -1);
+    int counter = 0;
 
-//this is just helping funx its just take 2 sort array and merge it one     
-void merge(int arr[] , int left , int mid , int right){
-    int leftArrSize = mid - left + 1 ;
-    int rightArrSize = right - mid ;
 
-    int leftArr[leftArrSize];
-    int rightArr[rightArrSize];
+    /*
+    here we are using dynamic programming for this what critria it should have is that it should have overlapping sub problem
+    and adter finding one optimial solution for sub problem we can optimally solve whole problem 
+    in this what approach we are using is memoization so we will memorize all the sub problem we solve first time 
+    we store it in memo and if we recive that sub prob again we have already stored and solves so its o(1) for that 
 
-    for(int i = 0; i<leftArrSize ; i++){
-        leftArr[i] = arr[left + i];
-    }
-    for(int i = 0 ; i < rightArrSize ; i++){
-        rightArr[i] = arr[mid + i + 1];
-
-    }
-int i = 0;
-int index = left;
-int j = 0;
-    while(i < leftArrSize && j < rightArrSize){
-        if(leftArr[i] <= rightArr[j]){
-            arr[index] = leftArr[i];
-            i++;
-            index++;
-        }else{
-            arr[index] = rightArr[j];
-            j++;
-            index++;
-        }
+    */
+public:
+int fib(int n){
+    counter++;
+    if(memo[n] != -1){
+    return memo[n];
     }
 
-    while(i<leftArrSize){
-        arr[index] = leftArr[i];
-        i++;
-        index++;
+    if(n == 0 || n== 1){
+        return n;
     }
 
-      while(j<rightArrSize){
-        arr[index] = rightArr[j];
-        j++;
-        index++;
-    }
+    memo[n] = fib(n-1) + fib(n-2);
+
+    return memo[n];
 }
-void mergeShort(int arr[] , int left , int right){
-    if(left >= right)return;
-    int mid = left + (right - left)/2;
 
-    mergeShort(arr , left , mid);
-    mergeShort(arr , mid+1 , right);
+};
 
-    merge(arr , left , mid , right);
-}
 int main(){
-    int arr[] = {5,3,1,2,4};
+    
+    FibWithMemo fib;
 
-//here are passing inclusive index so start with 0 and end with 4
-    mergeShort(arr , 0 , 4);
-    cout<<endl;
+    cout<<fib.fib(6)<<endl;
 
-    for(int a : arr){
-        cout<<a<<", ";
-    }
-
+    cout<<fib.counter;
 }
